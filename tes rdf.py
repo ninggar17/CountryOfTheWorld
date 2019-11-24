@@ -1,1 +1,3 @@
+import rdflib
 
+rdflib.query()
