@@ -1,3 +1,4 @@
+google-api-python-client
 certifi==2019.9.11
 chardet==3.0.4
 Django==2.2.7
