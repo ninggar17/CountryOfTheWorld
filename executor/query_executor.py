@@ -42,11 +42,25 @@ class CountryInfo(object):
         WHERE
             {?country a dbo:Country.
                 {?country foaf:name ?name, ?country_name; dbo:capital ?capitalCity.
-                ?capitalCity foaf:name ?capital.
-                FILTER(?country_name=?name and lang(?capital)='en')}
+                optional{
+                    ?capitalCity foaf:name ?capital.
+                    filter(lang(?capital)='en')}
+                optional
+                {
+                    ?capitalCity dbp:enName ?capital.
+                }
+                FILTER(?country_name=?name)}
             UNION
                 {?country foaf:name ?country_name; dbo:capital ?capitalCity.
-                ?capitalCity foaf:name ?name, ?capital.
+                {{
+                    ?capitalCity foaf:name ?capital, ?name.
+                    filter(?capital=?name and lang(?capital)='en')
+                }
+                union
+                {
+                    ?capitalCity dbp:enName ?capital, ?name.
+                    FILTER(xsd:string(?capital)=xsd:string(?name))
+                }}
                 FILTER(?capital=?name)}
             OPTIONAL
                 {?country dbp:currencyCode ?currency.}
@@ -73,7 +87,7 @@ class CountryInfo(object):
                 FILTER(regex(?callingCode,'^\\\\+\\\\d+$'))}
             OPTIONAL
                 {?country dbo:thumbnail ?thumbnail.}
-            FILTER(?name='"""+query+"""'@en)}
+            FILTER(xsd:string(?name)='"""+query+"""')}
         """)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
