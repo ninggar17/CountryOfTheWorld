@@ -32,7 +32,9 @@ class CountryInfo(object):
         PREFIX dbr:<http://dbpedia.org/resource/> 
         PREFIX owl:<http://www.w3.org/2002/07/owl#> 
         SELECT
-            ?country (group_concat(distinct ?country_name,'|') as ?country_name)
+            ?country
+            (group_concat(distinct ?abstract,'|') as ?abstract)
+            (group_concat(distinct ?country_name,'|') as ?country_name)
             (group_concat(distinct ?capital,'|') as ?capital) ?currency
             (group_concat(distinct ?language,'|') as ?language)
             (max(?foundingDate) as ?foundingDate) (group_concat(distinct ?leader,'|') as ?leader)
@@ -42,15 +44,13 @@ class CountryInfo(object):
             (group_concat(distinct ?thumbnail,'|') as ?thumbnail)
         WHERE
             {?country a dbo:Country.
-                {?country foaf:name ?name, ?country_name; dbo:capital ?capitalCity.
+                {?country foaf:name ?name, ?country_name.
                 optional{
-                    ?capitalCity foaf:name ?capital.
+                   ?country dbo:capital ?capitalCity.
+                   {?capitalCity foaf:name ?capital.
                     filter(lang(?capital)='en')}
-                optional
-                {
-                    ?capitalCity dbp:enName ?capital.
-                }
-                FILTER(?country_name=?name)}
+                union
+                   {?capitalCity dbp:enName ?capital.}}
             UNION
                 {?country foaf:name ?country_name; dbo:capital ?capitalCity.
                 {{
@@ -63,6 +63,11 @@ class CountryInfo(object):
                     FILTER(xsd:string(?capital)=xsd:string(?name))
                 }}
                 FILTER(?capital=?name)}
+            OPTIONAL
+                {
+                    ?country dbo:abstract ?abstract.
+                    FILTER(lang(?abstract)='en')
+                }
             OPTIONAL
                 {?country dbp:currencyCode ?currency.}
             OPTIONAL
@@ -88,7 +93,7 @@ class CountryInfo(object):
                 FILTER(regex(?callingCode,'^\\\\+\\\\d+$'))}
             OPTIONAL
                 {?country dbo:thumbnail ?thumbnail.}
-            FILTER(xsd:string(?name)='"""+query+"""')}
+            FILTER(regex(lcase(xsd:string(?name)), '"""+query.lower()+"""'))}
         """)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
