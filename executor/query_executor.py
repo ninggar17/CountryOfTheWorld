@@ -4,10 +4,11 @@ from json import JSONEncoder
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+from country_detail.apps import country_graph
+
 
 class CountryInfo(object):
     json_number = None
-
     def __init__(self, **kwargs):
         format_id_dict = self.reformat(kwargs['query'])
         for field in ('query', 'res'):
