@@ -50,7 +50,7 @@ class CountryInfo(object):
                    {?capitalCity foaf:name ?capital.
                     filter(lang(?capital)='en')}
                 union
-                   {?capitalCity dbp:enName ?capital.}}
+                   {?capitalCity dbp:enName ?capital.}}}
             UNION
                 {?country foaf:name ?country_name; dbo:capital ?capitalCity.
                 {{
