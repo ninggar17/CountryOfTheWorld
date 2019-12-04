@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 from rdflib import Graph
 
-country_graph = Graph()
+# country_graph = Graph()
 
 
 class CountryDetailConfig(AppConfig):
@@ -9,4 +9,5 @@ class CountryDetailConfig(AppConfig):
 
     def ready(self):
         # update my database here
-        country_graph.parse('C:/Users/Bukalapak/PycharmProjects/CountryOfTheWorld/country_data.ttl', format='turtle')
+        pass
+        # country_graph.parse('C:/Users/Bukalapak/PycharmProjects/CountryOfTheWorld/country_data.ttl', format='turtle')
