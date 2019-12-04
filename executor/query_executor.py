@@ -3,8 +3,6 @@ import re
 from json import JSONEncoder
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-
-from country_detail.apps import country_graph
 from executor.query import general_query_dbpedia, general_query_fuseki, get_thumbnails
 
 dbpedia_enpoint = 'http://dbpedia.org/sparql'
