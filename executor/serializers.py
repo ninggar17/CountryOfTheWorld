@@ -17,7 +17,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 class QuerySerializer(serializers.Serializer):
     query = serializers.CharField()
-    res = serializers.DictField(read_only=True)
+    res = serializers.ListField(read_only=True)
 
     def create(self, validated_data):
         return CountryInfo(**validated_data)
