@@ -20,8 +20,10 @@ class CountryInfo(object):
             setattr(self, field, input[field])
 
     def search(self, query):
-        res = {'query': query, 'res': self.query(query)}
-        print(res['res'])
+        try:
+            res = {'query': query, 'res': self.query(query)}
+        except Exception:
+            res = []
         return res
 
     @staticmethod
