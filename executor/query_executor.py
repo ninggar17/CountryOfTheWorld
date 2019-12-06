@@ -21,7 +21,7 @@ class CountryInfo(object):
         try:
             res = {'query': query, 'res': self.query(query)}
         except Exception:
-            res = []
+            res = {'query': query, 'res': []}
         return res
 
     @staticmethod
@@ -33,7 +33,6 @@ class CountryInfo(object):
         results = sparql.query().convert()
         res = []
         xsd = 'http://www.w3.org/2001/XMLSchema#'
-        # print(results['results']['bindings'])
         for result in results['results']['bindings']:
             res_i = {}
             for key in result.keys():
@@ -51,30 +50,24 @@ class CountryInfo(object):
                         else:
                             res_i[key] = result[key]['value']
             res.append(res_i)
-        # max_res = 0
-        # res_return = {}
-        # for index_res in range(len(res)):
-        #     if max_res < len(res[index_res]):
-        #         res_return = res[index_res]
-        #         max_res = len(res[index_res])
         return res
         pass
 
     def query(self, query):
         # print(general_query_dbpedia(query.lower()))
         res_dbpedia = self.remote(dbpedia_enpoint, general_query_dbpedia, query.lower())
-        # print(res_dbpedia[0])
-        uris = ''
+        uris = '((' + query.lower() + ')'
         try:
             for object in res_dbpedia:
-                uris = uris + '|' + object['object']
+                uris = uris + '|(' + re.sub('\\)', '\\\\\\\\)', re.sub('\\(', '\\\\\\\\(', object['object'])) + ')'
         except Exception:
             uris = uris + '|' + str(res_dbpedia['object'])
-        uris = uris[1:]
-        res_fuseki = self.remote(fuseki_endpoint, general_query_fuseki, query.lower())
-        if len(res_fuseki) == 0:
+        uris = uris + ')'
+        try:
             res_fuseki = self.remote(fuseki_endpoint, general_query_fuseki, uris)
-        res = self.join_result(res_dbpedia, res_fuseki)
+            res = self.join_result(res_dbpedia, res_fuseki)
+        except Exception:
+            res = res_dbpedia
         return res
 
     def join_result(self, dict1, dict2):
@@ -83,42 +76,22 @@ class CountryInfo(object):
         # print(json.dumps(dict1, indent=4))
         # print(json.dumps(dict2, indent=4))
         try:
-            if dict1:
+            if dict1 and dict2:
                 for object1 in dict1:
-                    if dict1:
-                        for object2 in dict2:
-                            if object1['object'] == object2['sameAs']:
-                                dict_merge = lambda a, b: a.update(b) or a
-                                new_object = dict_merge(object1, object2)
-                                res.append(new_object)
-                                # if len(new_object) > res_len:
-                                #     res = new_object
-                                #     res_len = len(res)
-                    else:
-                        new_object = object1
-                        res.append(new_object)
-                        # if len(new_object) > res_len:
-                        #     res = new_object
-                        #     res_len = len(res)
-            else:
+                    for object2 in dict2:
+                        if object1['object'] == object2['sameAs']:
+                            dict_merge = lambda a, b: a.update(b) or a
+                            new_object = dict_merge(object1, object2)
+                            res.append(new_object)
+            elif dict2:
                 res = dict2
-                # for obj in dict2:
-                #     new_object = obj
-                # if len(new_object) > res_len:
-                #     res = new_object
-                #     res_len = len(res)
         except Exception:
             if dict1['object'] == dict2['sameAs']:
                 dict_merge = lambda a, b: a.update(b) or a
                 # res = dict_merge(dict1, dict2)
                 res.append(dict_merge(dict1, dict2))
-        if res == []:
+        if not res:
             res = dict2
-            # for obj in dict2:
-            #     new_object = obj
-            #     if len(new_object) > res_len:
-            #         res = new_object
-            #         res_len = len(res)
         try:
             for obj in res:
                 if obj['type'] == 'Country':
@@ -127,12 +100,6 @@ class CountryInfo(object):
                 else:
                     obj['member'] = self.get_thumbnail_dbpedia(obj['member'], obj['memberName'])
                     del obj['memberName']
-            # if res['type'] == 'Country':
-            #     res['relatedCountry'] = self.get_thumbnail_dbpedia(res['relatedCountry'], res['relatedCountryName'])
-            #     del res['relatedCountryName']
-            # else:
-            #     res['member'] = self.get_thumbnail_dbpedia(res['member'], res['memberName'])
-            #     del res['memberName']
         except Exception:
             pass
         return res

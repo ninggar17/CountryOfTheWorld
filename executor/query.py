@@ -99,7 +99,8 @@ SELECT
     ?object
     (group_concat(distinct ?abstract,'|') as ?abstract)
     (group_concat(distinct ?object_name,'|') as ?object_name)
-    (group_concat(distinct ?capital,'|') as ?capital) ?currency
+    (group_concat(distinct ?capital,'|') as ?capital)
+    ?currency
     (group_concat(distinct ?language,'|') as ?language)
     (max(?foundingDate) as ?foundingDate) (group_concat(distinct ?leader,'|') as ?leader)
     (group_concat(distinct ?governmentType,'|') as ?governmentType)
@@ -114,8 +115,8 @@ WHERE
            {?capitalCity foaf:name ?capital.
             filter(lang(?capital)='en')}
         union
-           {?capitalCity dbp:enName ?capital.}
-        filter(lang(?name)='en' and ?name=?object_name)}}
+           {?capitalCity dbp:enName ?capital.}}
+        filter(lang(?name)='en' and ?name=?object_name)}
     UNION
         {?object foaf:name ?object_name; a dbo:Country; dbo:capital ?capitalCity.
         {{
