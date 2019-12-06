@@ -59,7 +59,7 @@ class CountryInfo(object):
         uris = '((' + query.lower() + ')'
         try:
             for object in res_dbpedia:
-                uris = uris + '|(' + re.sub('\\)', '\\\\\\\\)', re.sub('\\(', '\\\\\\\\(', object['object'])) + ')'
+                uris = uris + '|(' +re.sub('\'', '\\\\\'',(re.sub('\\)', '\\\\\\\\)', re.sub('\\(', '\\\\\\\\(', object['object'])) + ')'))
         except Exception:
             uris = uris + '|' + str(res_dbpedia['object'])
         uris = uris + ')'

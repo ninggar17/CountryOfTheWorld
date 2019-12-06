@@ -1,5 +1,6 @@
 def general_query_fuseki(query=None):
-    return """PREFIX ex:<http://www.example.org/>
+    return """
+PREFIX ex:<http://www.example.org/>
 PREFIX foaf:<http://xmlns.com/foaf/0.1/>
 PREFIX dbo:<http://dbpedia.org/ontology/>
 PREFIX dbp:<http://dbpedia.org/property/>
