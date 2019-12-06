@@ -49,6 +49,18 @@ class CountryInfo(object):
                             res_i[key] = re.search(r'/([^/]+)$', result[key]['value']).group(1)
                         else:
                             res_i[key] = result[key]['value']
+            if res_i.keys().__contains__('area'):
+                res_i['area']=str(res_i['area'])+' sq. mi.'
+            if res_i.keys().__contains__('density'):
+                res_i['density']=str(res_i['density'])+' per sq. mi.'
+            if res_i.keys().__contains__('coastline'):
+                res_i['coastline']=str(res_i['coastline'])+' coast/area ratio'
+            if res_i.keys().__contains__('infantMortality'):
+                res_i['infantMortality']=str(res_i['infantMortality'])+' per 1000 births'
+            if res_i.keys().__contains__('gdp'):
+                res_i['gdp']=str(res_i['gdp'])+' $ per capita'
+            if res_i.keys().__contains__('phoneSubs'):
+                res_i['phoneSubs']=str(res_i['phoneSubs'])+' per 1000'
             res.append(res_i)
         return res
         pass

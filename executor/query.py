@@ -31,7 +31,7 @@ where
     optional
         {?object ex:corpsValue ?corpsValue.}
     optional
-        {?object ex:area ?area.}
+        {?object ex:Area ?area.}
     optional
         {?object ex:coastline ?coastline.}
     optional
