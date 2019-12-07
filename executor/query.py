@@ -79,7 +79,10 @@ union
                 foaf:name ?countryMemberName.
         filter(?type=dbo:Place)
     }
-filter(regex(lcase(xsd:string(?name)), '(^|[\\\\s\\\\.,-_])"""+query+"""([\\\\s\\\\.,-_]|$)') || regex(str(?sameAs), '^"""+query+"""$'))
+filter(
+    regex(lcase(xsd:string(?name)), '(^|[\\\\s\\\\.,-_])"""+query+"""([\\\\s\\\\.,-_]|$)')
+||
+    regex(str(?sameAs), '^"""+query+"""$'))
 }
 group by ?sameAs ?type ?name ?phoneSubs ?gdp ?literacy ?corpsValue ?area ?coastline ?migration ?density ?population
          ?serviceRate ?birthRate ?infantMortality ?arable ?climateType ?sameAs ?anthem ?subArea
@@ -160,7 +163,10 @@ WHERE
         FILTER(regex(?callingCode,'^\\\\+\\\\d+$'))}
     OPTIONAL
         {?object dbo:thumbnail ?thumbnail.}
-    FILTER(regex(lcase(xsd:string(?name)), '(^|[\\\\s\\\\.,-_])"""+query+"""([\\\\s\\\\.,-_]|$)'))}
+    FILTER(
+        regex(lcase(xsd:string(?name)), '(^|[\\\\s\\\\.,-_])"""+query+"""([\\\\s\\\\.,-_]|$)')
+     ||
+        regex(lcase(str(?object)), '^"""+query+"""$'))}
 """
 
 

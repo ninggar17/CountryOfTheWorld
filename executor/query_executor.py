@@ -68,6 +68,7 @@ class CountryInfo(object):
     def query(self, query):
         # print(general_query_dbpedia(query.lower()))
         res_dbpedia = self.remote(dbpedia_enpoint, general_query_dbpedia, query.lower())
+        # print('dbpedia',res_dbpedia)
         uris = '((' + query.lower() + ')'
         try:
             for object in res_dbpedia:
@@ -123,7 +124,7 @@ class CountryInfo(object):
         data = self.remote(dbpedia_enpoint, get_thumbnails, pattern[1:])
         res = {}
         for obj in data:
-            res[name[uris.index(obj['object'])]] = obj['thumbnail']
+            res[name[uris.index(obj['object'])]] = obj
         return res
 
 
