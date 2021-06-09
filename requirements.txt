@@ -2,7 +2,7 @@ pygments
 google-api-python-client
 certifi==2019.9.11
 chardet==3.0.4
-Django==2.2.18
+Django==2.2.22
 djangorestframework==3.10.3
 idna==2.8
 pytz==2019.3
